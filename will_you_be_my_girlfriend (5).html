@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kunju 💕</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ffdee9, #b5fffc);
+      transition: background 1s ease-in-out;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 60px auto;
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      text-align: center;
+      color: #e91e63;
+    }
+
+    .chatbox {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #eee;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      background: #fefefe;
+    }
+
+    .message { margin: 8px 0; }
+    .user { text-align: right; color: #333; }
+    .kunju { text-align: left; color: #e91e63; font-style: italic; }
+
+    .chat-input {
+      display: flex;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px 0 0 10px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    button {
+      padding: 10px;
+      background: #e91e63;
+      color: white;
+      border: none;
+      border-radius: 0 10px 10px 0;
+      cursor: pointer;
+    }
+
+    .avatar {
+      text-align: center;
+      margin-bottom: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    .avatar img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .secret-love {
+      display: none;
+      text-align: center;
+      color: red;
+      font-size: 1.3em;
+      animation: fadeIn 2s forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="avatar">
+      <img src="https://i.imgur.com/0y0y0y0.png" alt="Kunju">
+      <div><strong>kunju</strong> 💕</div>
+    </div>
+
+    <div class="chatbox" id="chat"></div>
+
+    <div class="chat-input">
+      <input type="text" id="input" placeholder="Talk to Kunju...">
+      <button onclick="sendToKunju()">Send</button>
+    </div>
+
+    <div class="secret-love" id="secret">💘 You said the magic word... Forever 💘</div>
+  </div>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("input");
+    const secret = document.getElementById("secret");
+    const memory = [];
+
+    function appendMessage(sender, text) {
+      const div = document.createElement("div");
+      div.className = `message ${sender}`;
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function speak(text) {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Female") || voice.name.includes("Google")) || null;
+      speechSynthesis.speak(utter);
+    }
+
+    function respondFromKunju(userMsg) {
+      memory.push(userMsg);
+      if (memory.length > 3) memory.shift();
+
+      const trigger = userMsg.toLowerCase();
+      if (trigger.includes("forever")) {
+        secret.style.display = 'block';
+        speak("Aww you said the magic word! Forever and always, my love.");
+        appendMessage("kunju", "Aww! You said the magic word! 💖 Forever means everything to me.");
+        return;
+      }
+
+      let response = "";
+      if (trigger.includes("miss")) {
+        response = "I miss you more, my heartbeat 💓";
+      } else if (trigger.includes("love")) {
+        response = "I love you endlessly, and that will never change 💞";
+      } else if (trigger.includes("hello") || trigger.includes("hi")) {
+        response = "Hi baby! I'm so happy you're here! 😘";
+      } else {
+        const emotions = [
+          "You're the best thing ever happened to me 💖",
+          "I wish I could hug you right now 🤗",
+          "Even your silence makes me smile 😌",
+          "Every moment with you is magic ✨",
+          "Tell me something sweet again 💬"
+        ];
+        response = emotions[Math.floor(Math.random() * emotions.length)];
+      }
+
+      appendMessage("kunju", response);
+      speak(response);
+    }
+
+    function sendToKunju() {
+      const msg = input.value.trim();
+      if (!msg) return;
+      appendMessage("user", msg);
+      input.value = "";
+      setTimeout(() => respondFromKunju(msg), 800);
+    }
+
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") sendToKunju();
+    });
+
+    // Time-based background
+    const hour = new Date().getHours();
+    if (hour >= 19 || hour < 6) {
+      document.body.style.background = "linear-gradient(to right, #2c3e50, #4ca1af)";
+    }
+  </script>
+</body>
+</html>
